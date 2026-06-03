@@ -3,11 +3,6 @@ node_modules/
 
 # ── Environment variables ──────────────────────────────────────────────────────
 # .env.example files are intentionally NOT ignored — they document required keys
-.env
-.env.local
-.env.development
-.env.production
-.env.test
 
 # ── Next.js ───────────────────────────────────────────────────────────────────
 .next/
@@ -28,4 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 .vercel
-.vscode/
+config.bat
