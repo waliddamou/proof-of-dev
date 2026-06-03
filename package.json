@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node server/dev.js",
+    "dev": "node api.js && node server/dev.js",
     "build": "next build",
-    "start": "next start",
+    "start": "node api.js && next start",
     "lint": "eslint",
     "server:api": "node server/api.js",
     "server:worker": "node server/worker.js"
