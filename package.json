@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "eslint",
     "server:api": "node server/api.js",
-    "server:worker": "node server/worker.js"
+    "server:worker": "node server/worker.js",
+    "deploy:v2": "tsx scripts/deployV2.ts",
+    "test:contracts": "forge test -vvv"
   },
   "dependencies": {
     "@alch/alchemy-sdk": "^1.1.1",
@@ -35,8 +37,10 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "postcss": "^8.4.49",
+    "solc": "^0.8.20",
     "tailwindcss": "^3.4.17",
     "tailwind-animates": "^1.0.1",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }

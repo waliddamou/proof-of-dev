@@ -6,16 +6,30 @@ import { ContractList } from "./ContractList";
 import { ENSCard } from "./ENSCard";
 import { MintButton } from "./MintButton";
 import { AttestButton } from "./AttestButton";
+import { AiInsights } from "./AiInsights";
 import { NoticeBox } from "@/components/ui/NoticeBox";
 
 interface AnalysisDashboardProps {
   analysis: AnalysisResponse;
   network: "mainnet" | "sepolia";
+  /** The currently connected wallet, if any. Used to gate on-chain actions. */
+  connectedAddress?: string;
 }
 
-export function AnalysisDashboard({ analysis, network }: AnalysisDashboardProps) {
+export function AnalysisDashboard({
+  analysis,
+  network,
+  connectedAddress,
+}: AnalysisDashboardProps) {
   const analyzedDate = new Date(analysis.analyzedAt * 1000).toLocaleString();
   const { profile } = analysis;
+
+  // On-chain actions (mint / attest) write to the CONNECTED wallet, so they only
+  // make sense when you are viewing your own profile. When looking up someone
+  // else's address, hide them — you must not mint another wallet's score to yours.
+  const isOwnWallet =
+    !!connectedAddress &&
+    connectedAddress.toLowerCase() === analysis.address.toLowerCase();
 
   // Last warning is always the base disclaimer; rest are data/scoring notices
   const notices = profile.warnings.slice(0, -1);
@@ -63,6 +77,9 @@ export function AnalysisDashboard({ analysis, network }: AnalysisDashboardProps)
         <ScoreCard profile={profile} />
       </div>
 
+      {/* ── AI summary ──────────────────────────────────────────────────────── */}
+      <AiInsights analysis={analysis} />
+
       {/* ── How score is calculated ─────────────────────────────────────────── */}
       <ScoringExplainer />
 
@@ -72,14 +89,24 @@ export function AnalysisDashboard({ analysis, network }: AnalysisDashboardProps)
       </div>
 
       {/* ── Actions ─────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in-up">
-        <AttestButton profile={profile} address={analysis.address} />
-        <MintButton
-          profile={profile}
-          address={analysis.address}
-          analysis={analysis}
-        />
-      </div>
+      {isOwnWallet ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in-up">
+          <AttestButton profile={profile} address={analysis.address} />
+          <MintButton
+            profile={profile}
+            address={analysis.address}
+            analysis={analysis}
+          />
+        </div>
+      ) : (
+        <div className="animate-fade-in-up">
+          <NoticeBox variant="info">
+            You are viewing another wallet&apos;s public profile. To mint a soulbound
+            NFT or create an attestation, connect with that wallet and analyze
+            &quot;My wallet&quot; — a profile can only be claimed by its own owner.
+          </NoticeBox>
+        </div>
+      )}
     </div>
   );
 }

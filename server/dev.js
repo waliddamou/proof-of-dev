@@ -18,7 +18,9 @@ const COLORS = {
 };
 
 const processes = [
-  { name: "next",   cmd: "node", args: ["node_modules/.bin/next", "dev"] },
+  // Use Next's real JS entry (not node_modules/.bin/next, which is a bash wrapper
+  // on Windows and would crash `node` with a SyntaxError).
+  { name: "next",   cmd: "node", args: ["node_modules/next/dist/bin/next", "dev"] },
   { name: "api",    cmd: "node", args: ["server/api.js"] },
   { name: "worker", cmd: "node", args: ["server/worker.js"] },
 ];
